@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ProjectSchemaDefinitions xmlns="http://schemas.microsoft.com/build/2009/properties">
+
+	<ContentType Name="GLSLShader" DisplayName="GLSL Shader" ItemType="GLSLShader" />
+	<ItemType Name="GLSLShader" DisplayName="GLSL Shader" />
+	<FileExtension Name=".vert" ContentType="GLSLShader" />
+	<FileExtension Name=".frag" ContentType="GLSLShader" />
+	<FileExtension Name=".geom" ContentType="GLSLShader" />  
+	<FileExtension Name=".tesc" ContentType="GLSLShader" />
+	<FileExtension Name=".tese" ContentType="GLSLShader" />
+	<FileExtension Name=".comp" ContentType="GLSLShader" />
+  
+   <Rule
+    Name="GLSLShaderCompile"
+    PageTemplate="tool"
+    DisplayName="GLSL Shader Compilation"
+    Order="200">
+    <Rule.DataSource>
+      <DataSource
+        Persistence="ProjectFile"
+        ItemType="GLSLShader" />
+    </Rule.DataSource>
+    <Rule.Categories>
+      <Category Name="General" DisplayName="General" />
+      <Category Name="Command Line" Subtype="CommandLine" DisplayName="Command Line" />
+    </Rule.Categories>
+    <EnumProperty
+      Name="OutputType"
+      HelpContext="0"
+      DisplayName="Output as binary or header file"
+      Description="Output Type">
+      <EnumValue
+        Name="0"
+        DisplayName="SPV Binary"
+        Switch="" />
+      <EnumValue
+        Name="1"
+        DisplayName="CPP Header"
+        Switch="--vn" />
+    </EnumProperty>
+	    <StringListProperty
+      Name="OutputFolder"
+      DisplayName="Output Folder"
+      Visible="True"
+      IncludeInCommandLine="False" />
+	<StringListProperty
+      Name="Outputs"
+      DisplayName="Outputs"
+      Visible="false"
+      IncludeInCommandLine="False" />
+	<StringProperty
+      Name="CppName"
+      DisplayName="Cpp Array Name"
+      Visible="true"
+      IncludeInCommandLine="False" 
+	  Description="The name of the array in the generated cpp header (if Output Type is Header)"/>
+    <StringProperty
+      Name="ExecutionDescription"
+      DisplayName="Execution Description"
+      Visible="False"
+      IncludeInCommandLine="False" />
+    <StringListProperty
+      Name="AdditionalDependencies"
+      DisplayName="Additional Dependencies"
+      IncludeInCommandLine="False"
+      Visible="true" />
+    <StringProperty
+      Subtype="AdditionalOptions"
+      Name="AdditionalOptions"
+      Category="Command Line"
+	  DisplayName="Additional Options"
+	  Description="Additional Options">
+    </StringProperty>
+    <StringProperty
+      Name="CommandLineTemplate"
+      DisplayName="Command Line"
+      Visible="False"
+      IncludeInCommandLine="False" />
+    <DynamicEnumProperty
+      Name="GLSLShaderTarget_BeforeTargets"
+      Category="General"
+      EnumProvider="Targets"
+      IncludeInCommandLine="False"
+	  DisplayName="Execute Before"
+	  Description="Specifies the targets for the build customization to run before.">
+      <DynamicEnumProperty.ProviderSettings>
+        <NameValuePair
+          Name="Exclude"
+          Value="^GLSLShaderTarget_BeforeTargets" />
+      </DynamicEnumProperty.ProviderSettings>
+      <DynamicEnumProperty.DataSource>
+        <DataSource
+          Persistence="ProjectFile"
+          HasConfigurationCondition="true" />
+      </DynamicEnumProperty.DataSource>
+    </DynamicEnumProperty>
+    <DynamicEnumProperty
+      Name="GLSLShaderTarget_AfterTargets"
+      Category="General"
+      EnumProvider="Targets"
+      IncludeInCommandLine="False"
+	  DisplayName="Execute After"
+	  Description="Specifies the targets for the build customization to run after.">
+      <DynamicEnumProperty.ProviderSettings>
+        <NameValuePair
+          Name="Exclude"
+          Value="^GLSLShaderTarget_AfterTargets" />
+      </DynamicEnumProperty.ProviderSettings>
+      <DynamicEnumProperty.DataSource>
+        <DataSource
+          Persistence="ProjectFile"
+          HasConfigurationCondition="true" />
+      </DynamicEnumProperty.DataSource>
+    </DynamicEnumProperty>
+  </Rule>
+</ProjectSchemaDefinitions>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<ItemDefinitionGroup>
+		<GLSLShader>
+			<OutputType>0</OutputType>
+			<CppName>%(Filename)_%(Extension)</CppName>
+			<CommandLineTemplate>&quot;$(VULKAN_SDK)/Bin/glslangValidator.exe&quot; -V [OutputType] [CppName] -o [Outputs] %(Identity)</CommandLineTemplate>
+			<OutputFolder>$(OutDir)</OutputFolder>
+			<ExecutionDescription>Compiling Shader '%(Filename)%(Extension)'</ExecutionDescription>
+		</GLSLShader>
+	</ItemDefinitionGroup>
+	
+	<PropertyGroup>
+		<GLSLShaderTarget_BeforeTargets>Compile</GLSLShaderTarget_BeforeTargets>
+		<GLSLShaderTarget_AfterTargets>PreBuildEvent</GLSLShaderTarget_AfterTargets>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<PropertyPageSchema Include="$(MSBuildThisFileDirectory)Shader.xml" />
+		<AvailableItemName Include="GLSLShader">
+			<Targets>GLSLShaderTarget</Targets>
+		</AvailableItemName>
+	</ItemGroup>
+	
+	<UsingTask
+		TaskName="GLSLShaderCompile"
+		TaskFactory="XamlTaskFactory"
+		AssemblyName="Microsoft.Build.Tasks.v4.0">
+		<Task>$(MSBuildThisFileDirectory)$(MSBuildThisFileName).xml</Task>
+	</UsingTask>
+	
+	<Target
+		Name="GLSLShaderTarget"
+		BeforeTargets="$(GLSLShaderTarget_BeforeTargets)"
+		AfterTargets="$(GLSLShaderTarget_AfterTargets)"
+		Inputs="%(GLSLShader.Identity);%(GLSLShader.AdditionalDependencies)"
+		Outputs="$(IntDir)%(Filename)%(Extension).tlog"
+		>
+		
+		<Message
+			Condition="%(GLSLShader.ExcludedFromBuild)!='true'"
+			Importance="High"
+			Text="%(GLSLShader.ExecutionDescription)" 
+		/>
+			
+		<GLSLShaderCompile
+			Condition="%(GLSLShader.OutputType)=='0' and %(GLSLShader.ExcludedFromBuild)!='true'"
+			CommandLineTemplate="%(GLSLShader.CommandLineTemplate)"
+			OutputType="%(GLSLShader.OutputType)"
+			CppName=""
+			AdditionalOptions="%(GLSLShader.AdditionalOptions)"
+			Outputs="%(GLSLShader.OutputFolder)%(GLSLShader.Filename)%(GLSLShader.Extension).spv"
+		/>
+		
+		<GLSLShaderCompile
+			Condition="%(GLSLShader.OutputType)=='1' and %(GLSLShader.ExcludedFromBuild)!='true'"
+			CommandLineTemplate="%(GLSLShader.CommandLineTemplate)"
+			OutputType="%(GLSLShader.OutputType)"
+			CppName="$([System.String]::Copy(%(GLSLShader.CppName)).Replace('.',''))"
+			AdditionalOptions="%(GLSLShader.AdditionalOptions)"
+			Outputs="%(GLSLShader.OutputFolder)%(GLSLShader.Filename)%(GLSLShader.Extension).h"
+		/>
+		
+		<WriteLinesToFile
+			Condition=" %(GLSLShader.ExcludedFromBuild)!='true' and $(MSBuildLastTaskResult)=='True'"
+			File="$(IntDir)%(GLSLShader.Filename)%(GLSLShader.Extension).tlog"
+			Lines="%(Fullpath)"
+		/>
+	</Target>
+	
+</Project>
